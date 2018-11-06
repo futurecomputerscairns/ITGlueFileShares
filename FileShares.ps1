@@ -195,7 +195,7 @@ if(($silent) -and !($api -or $file)) {
                         1179817 {$Perm = "Read"}
 						  
                     }
-                    $permissions= $permissions + "$Domain\$user $Perm"
+                    $permissions= $permissions + "<p>$Domain\$user $Perm</p>"
                 } # End foreach $ACL
                 
                 $DiskPath= $path[$i]
