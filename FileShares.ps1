@@ -218,7 +218,7 @@ if(($silent) -and !($api -or $file)) {
                 }
                 if($api) {
                     try {
-                        Import-Module C:\temp\itglue\modules\itgluepowershell\powershellwrapper-master\ITGlueAPI\itglueapi.psd1
+                        Import-Module ITGlueAPI
                     }
                     catch {
                         Write-Error "ERROR: The IT Glue API PowerShell module cannot be imported."
