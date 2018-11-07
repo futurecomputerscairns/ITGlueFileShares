@@ -207,7 +207,7 @@ if(($silent) -and !($api -or $file)) {
                         "Organization" = "$organization"
                         "Share Name" = "$share"
                         
-                        "Server" = "$computer"
+                        "Server" = "$currentServer"
                         "Share Path" = "$writePath"
                         "Disk Path" = "$DiskPath"
                         "Permissions" = "$permissions"
