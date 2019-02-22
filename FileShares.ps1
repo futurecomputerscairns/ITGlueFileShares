@@ -55,6 +55,28 @@ function writeOutput {
     Write-Host "`t `t" $permissions "`n"#>
 }
 
+function Get-DfsnAllFolderTargets ()
+{
+    #Get a list of all Namespaces in the Domain
+    Write-Progress -Activity "1/3 - Getting List of Domain NameSpaces"
+    $RootList = Get-DfsnRoot
+ 
+    #Get a list of all FolderPaths in the Namespaces
+    Write-Progress -Activity "2/3 - Getting List of Domain Folder Paths"
+    $FolderPaths = foreach ($item in $RootList)
+    {
+        Get-DfsnFolder -Path "$($item.path)\*"
+    }
+ 
+    #Get a list of all Folder Targets in the Folder Paths, in the Namespaces"
+    Write-Progress -Activity "2/3 - Getting List of Folder Targets"
+    $FolderTargets = foreach ($item in $FolderPaths)
+    {
+        Get-DfsnFolderTarget -Path $item.Path    
+    }
+    return $FolderTargets
+}
+
 function updateAPIConfigFile {
     
     $api__flex_asset_type_id = $api_config.flexible_asset_type_id
@@ -167,6 +189,11 @@ if(($silent) -and !($api -or $file)) {
     $description =  $Files| select -ExpandProperty Description
     $path = $Files| select -ExpandProperty Path
     $server= ([regex]::matches($Files, "(?<=[\\][\\])[^\\]+"))
+    $domain = Get-ADDomain | Select DNSRoot
+    $dfs = Get-DfsnAllFolderTargets
+    $shares = $shares + $dfs.targetpath
+    $purge = Get-ITGlueFlexibleAssets -filter_organization_id $attempted_match.data.id -filter_flexible_asset_type_id $api_config.flex_asset_id | Select ID
+    foreach ($item in $purge) {Remove-ITGlueFlexibleAssets -id $item -Confirm:$false}
 
     $i=0
     foreach ($share in $shares) {
@@ -206,7 +233,6 @@ if(($silent) -and !($api -or $file)) {
                     $PostData = @{
                         "Organization" = "$organization"
                         "Share Name" = "$share"
-                        
                         "Server" = "$currentServer"
                         "Share Path" = "$writePath"
                         "Disk Path" = "$DiskPath"
@@ -255,3 +281,4 @@ if(($silent) -and !($api -or $file)) {
     if($file){
         $SaveData | export-csv -Path $file -NoTypeInformation
     }
+
