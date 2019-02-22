@@ -189,9 +189,9 @@ if(($silent) -and !($api -or $file)) {
     $description =  $Files| select -ExpandProperty Description
     $path = $Files| select -ExpandProperty Path
     $server= ([regex]::matches($Files, "(?<=[\\][\\])[^\\]+"))
-    $domain = Get-ADDomain | Select DNSRoot
-    $dfs = Get-DfsnAllFolderTargets
-    $shares = $shares + $dfs.targetpath
+    #$domain = Get-ADDomain | Select DNSRoot
+    #$dfs = Get-DfsnAllFolderTargets
+    #$shares = $shares + $dfs.targetpath
     $purge = Get-ITGlueFlexibleAssets -filter_organization_id $attempted_match.data.id -filter_flexible_asset_type_id $api_config.flex_asset_id | Select ID
     foreach ($item in $purge) {Remove-ITGlueFlexibleAssets -id $item -Confirm:$false}
 
