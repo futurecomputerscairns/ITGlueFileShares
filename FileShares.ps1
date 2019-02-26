@@ -192,8 +192,9 @@ if(($silent) -and !($api -or $file)) {
     #$domain = Get-ADDomain | Select DNSRoot
     #$dfs = Get-DfsnAllFolderTargets
     #$shares = $shares + $dfs.targetpath
-    $purge = Get-ITGlueFlexibleAssets -filter_organization_id $attempted_match.data.id -filter_flexible_asset_type_id $api_config.flex_asset_id | Select ID
-    $purge | ForEach-Object {Remove-ITGlueFlexibleAssets -id $_ -Confirm:$false}
+    $attempted_match = Get-ITGlueOrganizations -filter_name "$organization"
+    $purge = Get-ITGlueFlexibleAssets -filter_organization_id $attempted_match.data.id -filter_flexible_asset_type_id 72200 | Select ID
+    $purge.data.id | ForEach-Object {Remove-ITGlueFlexibleAssets -id $_ -Confirm:$false}
 
     $i=0
     foreach ($share in $shares) {
