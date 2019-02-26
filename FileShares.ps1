@@ -204,8 +204,8 @@ if(($silent) -and !($api -or $file)) {
             $permissions= ""
             Write-Host $share -ForegroundColor Green
             Write-Host $('-' * $share.Length) -ForegroundColor Green
-            $currentServer= $server[$i]
-            $PSID = (Get-ITGlueConfigurations -filter_name $currentserver).data.'id' | Select-Object -First 1
+            $currentServer = hostname
+            $PSID = (Get-ITGlueConfigurations -filter_name $currentserver).data.id 
             $writePath = "\\$currentServer\$share"
 
 
