@@ -193,7 +193,7 @@ if(($silent) -and !($api -or $file)) {
     #$dfs = Get-DfsnAllFolderTargets
     #$shares = $shares + $dfs.targetpath
     $purge = Get-ITGlueFlexibleAssets -filter_organization_id $attempted_match.data.id -filter_flexible_asset_type_id $api_config.flex_asset_id | Select ID
-    foreach ($item in $purge) {Remove-ITGlueFlexibleAssets -id $item -Confirm:$false}
+    $purge | ForEach-Object {Remove-ITGlueFlexibleAssets -id $_ -Confirm:$false}
 
     $i=0
     foreach ($share in $shares) {
@@ -204,6 +204,7 @@ if(($silent) -and !($api -or $file)) {
             Write-Host $share -ForegroundColor Green
             Write-Host $('-' * $share.Length) -ForegroundColor Green
             $currentServer= $server[$i]
+            $PSID = (Get-ITGlueConfigurations -filter_name $currentserver).data.'id' | Select-Object -First 1
             $writePath = "\\$currentServer\$share"
 
 
@@ -233,7 +234,7 @@ if(($silent) -and !($api -or $file)) {
                     $PostData = @{
                         "Organization" = "$organization"
                         "Share Name" = "$share"
-                        "Server" = "$currentServer"
+                        "Server" = "$psid"
                         "Share Path" = "$writePath"
                         "Disk Path" = "$DiskPath"
                         "Permissions" = "$permissions"
